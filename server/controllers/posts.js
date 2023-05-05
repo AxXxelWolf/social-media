@@ -65,7 +65,8 @@ model instance that represents the document matching
 the specified _id value. This Mongoose model instance 
 is not a copy of the document in the database, but rather
  a representation of it in memory. So to refelect changes 
- we need to update it */
+ we need to update it.
+ This is coz likes contains a map attribute which does not update automatically */
     const updatedPost = await Post.findByIdAndUpdate(
       id,
       { likes: post.likes },
