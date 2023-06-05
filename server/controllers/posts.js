@@ -1,7 +1,7 @@
 import Post from "../models/Post.js";
+import User from "../models/User.js";
 
-/*CREATE*/
-
+/* CREATE */
 export const createPost = async (req, res) => {
   try {
     const { userId, description, picturePath } = req.body;
@@ -11,13 +11,14 @@ export const createPost = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       location: user.location,
-      description: description,
+      description,
       userPicturePath: user.picturePath,
-      PicturePath,
+      picturePath,
       likes: {},
       comments: [],
     });
     await newPost.save();
+
     const post = await Post.find();
     res.status(201).json(post);
   } catch (err) {
@@ -25,7 +26,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-/*READ*/
+/* READ */
 export const getFeedPosts = async (req, res) => {
   try {
     const post = await Post.find();
@@ -45,8 +46,7 @@ export const getUserPosts = async (req, res) => {
   }
 };
 
-/*UPDATE*/
-
+/* UPDATE */
 export const likePost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -59,18 +59,11 @@ export const likePost = async (req, res) => {
     } else {
       post.likes.set(userId, true);
     }
-    /*lines 63-67 -> When you use the findById method, 
-Mongoose queries the database and returns a Mongoose 
-model instance that represents the document matching 
-the specified _id value. This Mongoose model instance 
-is not a copy of the document in the database, but rather
- a representation of it in memory. So to refelect changes 
- we need to update it.
- This is coz likes contains a map attribute which does not update automatically */
+
     const updatedPost = await Post.findByIdAndUpdate(
       id,
       { likes: post.likes },
-      { new: true } //to return updated doc(if its not specified mongoose return old doc and then it updates it)
+      { new: true }
     );
 
     res.status(200).json(updatedPost);
@@ -78,3 +71,11 @@ is not a copy of the document in the database, but rather
     res.status(404).json({ message: err.message });
   }
 };
+/*lines 63-67 -> When you use the findById method, 
+Mongoose queries the database and returns a Mongoose 
+model instance that represents the document matching 
+the specified _id value. This Mongoose model instance 
+is not a copy of the document in the database, but rather
+ a representation of it in memory. So to refelect changes 
+ we need to update it.
+ This is coz likes contains a map attribute which does not update automatically */
